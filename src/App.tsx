@@ -1,26 +1,69 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import Favorites from './components/Favorites';
+import AddCards from './components/AddCards';
+import Cards from './components/Cards';
+import { GlobalStyle } from './components/styled-components';
+import { Card } from './interfaces/card';
 
-function App() {
+export default function App() {
+  const [cards, setCards] = useState<Card[]>([]);
+  const [showFavorites, setShowFavorites] = useState<boolean>(false);
+  const [darkTheme, setDarkTheme] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedCards = JSON.parse(localStorage.getItem("cards") || "[]") as Card[];
+    setCards((prevCards) => {
+      if (JSON.stringify(prevCards) !== JSON.stringify(storedCards)) {
+        return storedCards;
+      }
+      return prevCards;
+    });
+  }, []);
+
+  function updateStoredCards(newCards: Card[]) {
+    localStorage.setItem("cards", JSON.stringify(newCards));
+    setCards(newCards);
+  }
+  
+  function handleFavorite(index: number){
+    const updatedCards = [...cards];
+    updatedCards[index].favorite = !updatedCards[index].favorite;
+    updateStoredCards(updatedCards);
+  }
+
+  function handleDeleteCard(index: number){
+    const updatedCards = [...cards];
+    updatedCards.splice(index, 1);
+    updateStoredCards(updatedCards);
+  }
+
+  function handleDarkTheme(){
+    setDarkTheme(!darkTheme);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyle handleDarkTheme={darkTheme}/>
+      <div>
+        <AddCards
+          updateStoredCards={updateStoredCards}
+          cards={cards}
+          showFavorites={{ showFavorites, setShowFavorites }}
+          handleDarkTheme={handleDarkTheme}
+          darkTheme={darkTheme}
+        />
+        {showFavorites ?
+          (<Favorites
+            cards={cards}
+            handleFavorite={handleFavorite}
+            handleDeleteCard={handleDeleteCard}
+          />) : (<Cards
+            cards={cards}
+            handleFavorite={handleFavorite}
+            handleDeleteCard={handleDeleteCard}
+          />)
+        }
+      </div>
+    </>
   );
 }
-
-export default App;
