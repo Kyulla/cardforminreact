@@ -35,10 +35,10 @@ export default function AddCards({
     return (
       <div>
         <CardForm showContents={showFavorites.showFavorites}>
-          <input className={"form"+showFavorites.showFavorites} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titolo" />
-          <input className={"form"+showFavorites.showFavorites} type="text" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Link immagine" />
-          <input className={"form"+showFavorites.showFavorites} type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descrizione" />
-          <button className={"form"+showFavorites.showFavorites} onClick={handleSave}>Aggiungi card</button>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titolo" />
+          <input type="text" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Link immagine" />
+          <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descrizione" />
+          <button onClick={handleSave}>Aggiungi card</button>
         </CardForm>
         <ShowFavorite>
           <ChoiceButtons onClick={() => showFavorites.setShowFavorites(false)}>Home</ChoiceButtons>
